@@ -1,0 +1,26 @@
+- hosts: be_s
+  tasks:
+  - package:
+     name: haproxy
+     state: present
+  - template:
+     src: "/root/book/haproxy.cfg"
+     dest: "/etc/haproxy/haproxy.cfg"
+  - service:
+     name: haproxy
+     state: restarted
+
+- hosts: fe_s
+  tasks: 
+  - package:
+     name: "{{  item  }}"
+     state: present
+    loop:
+     - "httpd"
+     - "php"
+  - copy: 
+     dest: "/var/www/html/index.php"
+     src: "/root/book/index.php"
+  - service:
+     name: httpd
+     state: restarted  
